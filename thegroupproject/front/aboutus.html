@@ -1,0 +1,87 @@
+ <!DOCTYPE html>
+<head>
+	<title> About Us</title>		
+	<link rel="stylesheet"	href= "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"crossorigin="anonymous">		
+	<link rel="stylesheet" type="text/css" href="style.css">	
+<style>
+body {
+            background-color:#DADADA;
+        }
+
+h1{
+ text-align:center;
+}
+
+</style>
+</head>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	
+<body>	
+	<h1><b>ABOUT US</h1>
+	<h3>Our Vision</h3>
+		<ul>
+		<li>We believe technology is amazing, and we aspire to enhance our customers’ lives through technology – anywhere, anytime.</li>
+		</ul>
+	<h3>Our Company</h3>
+	<ul>
+		<li>Wholly-owned subsidiary of Best Buy Co. Inc.</li>
+		<li>Canada’s largest consumer electronics retailer</li>
+		<li>Operating the Best Buy, Geek Squad, Best Buy Mobile, Best Buy for Business, and ReClaim brands</p>
+	</ul>
+	<h3>Our presence</h3>
+	<ul>
+		<li>175+ stores coast-to-coast</li>
+		<li>80% of Canadians live within 25 km of one of our stores</li>
+		<li>Most visited multichannel retailer with over 250 million visits in-store and website each year</li>
+	</ul>
+	<h3>Our People</h3>
+	<ul>
+		<li>Kivens - Professional developer</li>
+		<li>Shalin Bhojani- Marketing Manager</li>
+		<li>Dhvani bhatt- Front-end developer</li>
+	</ul>
+	<h3>Our Social Impact</h3>
+	<ul>
+		<li>Our mission is to connect youth with technology to inspire, motivate, and empower their education</li>
+		<li>Our School Tech Grant program has provided schools with more than $2.1 million to upgrade their technology</li>
+		<li>We’ve helped more than 750 youth access post-secondary education by investing over $2.3 million in Boys and Girls Club Scholarships</li>
+		<li>Geek Squad Academy offers youth an introduction to new technology such as robotics and 3D design</li>
+		<li>Our Blue Gives Back program encourages Best Buy employees to help the communities where we live and work</li>
+		<li>We’re committed to being an environmentally responsible organization with a variety of green programs across our stores and offices</li>
+	</ul>
+	<h3> Contact Information</h3>
+	<ul>
+	<li><a href = "mailto:electricshop@gmail.com"> Email</a></li>
+	<li><a href="tel:647-555-1212">647-555-1212</a>
+	<br>
+	<br>
+	<table>
+	<tr>
+            <td colspan="3"><a href="products.html"><button>Products</button></a>
+                <a href="products_faves.html"><button>Favorites</button></a>
+                <a href="products_others.html"><button>Other Products</button></a>
+                <a href="registration.html"><button>Registration</button></a>
+                <a href="updateuser.html"><button>Update User</button></a>
+                <button onclick="logout()">Logout</button>
+            </td>
+	</tr>
+	</table>
+	<script>
+		function logout(){
+				setCookie('userlogged', "", 7);
+				setCookie('items', "", 7);
+				window.location.href = "signin.html";
+			}
+			function setCookie(name,value,days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days*24*60*60*1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    }
+		
+			</script>
+</body>
+</html>

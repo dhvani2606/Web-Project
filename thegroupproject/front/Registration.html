@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<head>
+<title> Registration Form </title>		
+<link rel="stylesheet"
+href= "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+crossorigin="anonymous">		
+<link rel="stylesheet" type="text/css" href="style.css">		
+</head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<body>	
+	<br><br><br>
+	<div class="container">
+		<div class="row">
+		<div class="col-md-3">
+		</div>
+		<div class="col-md-6 main">
+			<h1> <b>Registration form</b></h1>
+			<form>
+			<input class="box" type="text"     id="name" placeholder="Name" required /><br>							
+			<input class="box" type="email"    id="email" placeholder="E-Mail" required  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"  title="Please enter a valid email id e.g. 'email@email.com'"/><br>
+			<input class="box" type="password" id="password" placeholder="Password" required pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8, 20}$"  title="Please enter a Strong password, Must contain(Ucase, Lcase, Number, character) minimum length-8" /><br>	
+			<input class="box" type="text"     id="phone_number" placeholder="Phone Number" required   title="Please enter the Phone number eg- 111-111-1111"/><br>
+			<input class="box" type="text"     id="age" placeholder="Age " required pattern="^(0?[1-9]|[1-9][0-9]|[1][1-9][1-9]|60)$" title="Age must be less than 60 "/><br><br><br>
+			<button type="Submit">Register</button><br>						
+			</form>
+		</div>
+		<div class="col-md-3"></div></div></div>
+	</body>
+	<script>
+		var endpoint = "http://localhost:3000/register";
+		$("button").click(function(){
+			var name = $("#name").val();
+			var email = $("#email").val();
+			var password = $("#password").val();
+			var phone_number = $("#phone_number").val();           
+			var age = $("#age").val();	
+	 			if (name != "" && email != "" && password != ""&& phone_number != ""&& age != ""){
+				$.post(endpoint, {
+				name: $("#name").val(), 
+				email: $("#email").val(),
+				password: $("#password").val(),
+				phone_number: $("#phone_number").val(),
+				age: $("#age").val()			   
+				}, function(data, status){
+					console.log("Data: " + data.message + "\nStatus: " + status);
+					if(data.message == "Success"){
+						window.location.href = "signin.html";
+					}
+				});	
+				alert("Registration Successful !");
+				$("input").val("");			
+			}
+			else {
+				alert("please enter the data in text box")
+				document.name.focus();
+			}
+	});
+	</script>
+</html>	

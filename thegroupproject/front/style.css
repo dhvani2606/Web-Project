@@ -1,0 +1,39 @@
+.main{
+	padding:20px;
+	font-family: 'Helvetica', serif;
+	box-shadow: 5px 5px 7px 5px #888888;
+	
+}
+.main h1{	
+	text-align:center;
+}
+input{
+	font-family: 'Helvetica', serif;
+	width: 100%;
+	font-size: 20px;
+	padding: 12px 20px;
+	margin: 8px 0;
+	border: none;
+	border-bottom: 2px solid #767474;
+}
+button[type=Submit] {
+	margin-left: 230px;
+	background-color: #303030;
+	color: white;
+	padding: 14px 20px;border: none;
+	cursor: pointer;
+	
+}
+button:hover[type=Submit]{
+	background-color: black;
+}
+
+body{
+	background-image: url("https://www.itl.cat/pngfile/big/224-2241047_pastel-wallpaper-4k.jpg");
+	background-color:#DADADA;
+}
+.main{
+	background: rgba(0,0,0,0);
+}
+
+

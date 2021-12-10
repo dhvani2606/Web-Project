@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<head>
+	<title> Cart</title>		
+<link rel="stylesheet"
+href= "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+crossorigin="anonymous">		
+<link rel="stylesheet" type="text/css" href="style.css">	
+<style>
+	input[type=number]{
+    width: 80px;
+} 
+	input[type=number]::-webkit-inner-spin-button {
+            opacity: 1
+        }
+.Table-Normal {
+    position: relative;
+    display: block;
+    margin: 10px auto;
+    padding: 0;
+    width: 100%;
+    height: auto;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.Table-Normal thead tr {
+    background: rgba(0,0,0,0);
+    font-weight: bold;
+}
+
+.Table-Normal tr {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border: 1px solid #999;
+	background: rgba(0,0,0,0);
+    width: 100%;
+}
+
+.Table-Normal tr td {
+    margin: 0;
+    padding: 4px 8px;
+    border: 0;
+    border: 1px solid #999;
+}
+
+.Table-Normal tbody tr:nth-child(2) {
+	background: rgba(0,0,0,0);
+}
+</style>	
+</head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<body>	
+	<br><br><br>
+	<div class="container" >
+		<div class="row">
+		<div class="col-md-3">
+								
+		</div>				
+		<div class="col-md-7 main " style="background: rgba(0,0,0,0);">						
+			<h1> <b>Cart</b> </h1>
+			<td colspan="3"><a href="products.html"><button>Products</button></a>
+                <a href="products_faves.html"><button>Favorites</button></a>
+                <a href="products_others.html"><button>Other Products</button></a>
+                <a href="cart.html"><button>View Cart</button></a>
+                <a href="updateuser.html"><button>Update User</button></a>
+                <a href="aboutus.html"><button>About us</button></a>
+                <button onclick="logout()">Logout</button>
+            </td>
+			<form style="width:200px; margin:0 auto;">
+				<table  class="Table-Normal" style="width: 100%;">
+					<thead>
+						<tr>
+							<td>Name</td>
+							<td>Price</td>
+							<td>Quantities</td>
+							
+						</tr>
+					</thead>
+					<tbody id="cartitems">
+						<tr>
+							<td>1</td>
+							<td>John Doe</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>John Smith</td>
+						</tr>
+				
+						<tr>
+							<td>3</td>
+							<td>Bob Smith</td>
+							
+						</tr>
+					</tbody>
+				</table>
+				<button type="Submit" id="paybutton" >Pay</button><br>						
+			</form>
+		</div>				
+		<div class="col-md-3"></div></div></div>
+	</body>
+	<script>
+		if(getCookie("userlogged") == ""){
+            logout();
+        }
+		$("#paybutton").click(function(){
+			alert("redirecting to payment page.");
+			window.location.href = "payment.html";
+			
+		});
+		$(document).ready(function() {
+			updatePay();
+			var tbody = document.getElementById("cartitems");
+			tbody.innerHTML = "";
+			var allitems = getCookie("items").split('|');
+		
+			for(var i = 0; i<allitems.length; i++){
+				var item = allitems[i];
+				var name = (item.split(","))[0];
+				var quantity = (item.split(","))[1];
+				
+				var trueprice = "";
+				var truename = "";
+				var allprices = getCookie("prices").split('|');
+				var markup = "";
+				for(var j = 0; j<allprices.length; j++){
+					var pair = allprices[j];
+					var pricename = (pair.split(","))[0];
+					var price = (pair.split(","))[1];
+					if(name == pricename){
+						trueprice = price;
+						truename = (pair.split(","))[2];
+					}
+					markup = "<tr id='tr"+name+"'><td>"+truename+"</td><td>"+trueprice+"</td><td><input id='q"+name+"' type='number' onchange=removeFromCart('"+name+"') value='"+quantity+"'></input></td></tr>";
+					
+					
+
+				}
+				console.log(truename + " && " + trueprice + " && " + quantity);
+				var tableBody = $("#cartitems");
+				if(truename == undefined && trueprice == undefined && quantity == undefined){
+					markup = "<tr><td colspan='3'>Cart is empty!</td></tr>";
+					document.getElementById("paybutton").setAttribute("style", "visibility:hidden;");
+				}
+				tableBody.append(markup);
+			}
+			
+			
+			//console.log(allitems.length);
+			
+		});
+
+		function removeFromCart(id){
+			if(document.getElementById("q"+id).value < 1){
+				var confirmed = confirm("Delete this from cart?");
+				if(confirmed){
+					//delete from cookies
+					var allitems = getCookie("items").split('|');
+					var newitems = "";
+					for(var i=0; i<allitems.length; i++){
+						var n = allitems[i].startsWith(id);
+						if(!n){
+							newitems += allitems[i];
+							if(i<allitems.length-1){
+								newitems += "|";
+							}
+						}
+					}
+					if(newitems.endsWith("|")){
+						newitems = newitems.slice(0, -1);
+					}
+					setCookie('items', newitems, 7);
+
+					//delete from table
+					$('tbody#cartitems tr#tr'+id).remove();
+				}else{
+					document.getElementById("q"+id).value = 1;
+				}
+			}else{
+				var whole_cart = getCookie("items").split('|');
+				var new_cart = "";
+				for(var z = 0; z<whole_cart.length; z++){
+					if(whole_cart[z].startsWith(id)){
+						var target = whole_cart[z].split(',');
+						target[1] = document.getElementById("q"+id).value;
+						console.log(target[0] + "," + target[1]);
+						new_cart += target[0] + "," + target[1] + "|";
+					}else{
+						new_cart += whole_cart[z] + "|";
+					}
+					
+				}
+				if(new_cart.endsWith("|")){
+					new_cart = new_cart.slice(0, -1);
+				}
+				setCookie('items', new_cart, 7);
+			}
+			updatePay();
+		}
+
+		function updatePay(){
+			var button = document.getElementById("paybutton");
+			var items = getCookie("items").split('|');
+			var total = 0;
+			var tbody = document.getElementById("cartitems");
+			var allitems = getCookie("items").split('|');
+		
+			for(var i = 0; i<allitems.length; i++){
+				var item = allitems[i];
+				var name = (item.split(","))[0];
+				var quantity = (item.split(","))[1];
+				
+				var trueprice = "";
+				var truename = "";
+				var allprices = getCookie("prices").split('|');
+				var markup = "";
+				for(var j = 0; j<allprices.length; j++){
+					var pair = allprices[j];
+					var pricename = (pair.split(","))[0];
+					var price = (pair.split(","))[1];
+					if(name == pricename){
+						trueprice = price;
+						truename = (pair.split(","))[2];
+					}
+				}
+				console.log(truename + " && " + trueprice + " && " + quantity + " && " + (quantity*trueprice));
+				total += (quantity*trueprice);
+			}
+			button.innerHTML = "Pay("+total+")";
+		}
+
+		function setCookie(name,value,days) {
+			var expires = "";
+			if (days) {
+				var date = new Date();
+				date.setTime(date.getTime() + (days*24*60*60*1000));
+				expires = "; expires=" + date.toUTCString();
+			}
+			document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+		}
+		function getCookie(name) {
+			var nameEQ = name + "=";
+			var ca = document.cookie.split(';');
+			for(var i=0;i < ca.length;i++) {
+				var c = ca[i];
+				while (c.charAt(0)==' ') c = c.substring(1,c.length);
+				if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+			}
+			return null;
+		}
+		function eraseCookie(name) {   
+			document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+		}
+		function logout(){
+        setCookie('userlogged', "", 7);
+        setCookie('items', "", 7);
+        window.location.href = "signin.html";
+    }
+	</script>
+</html>	

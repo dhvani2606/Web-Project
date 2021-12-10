@@ -1,0 +1,91 @@
+<html>
+    <head>
+      <title>Login Page</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">        
+        <link rel="stylesheet"
+        href= "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">		
+        <link rel="stylesheet" type="text/css" href="style.css">		
+        </head>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>        
+        </head>
+        <body>	
+          <br><br><br>
+          <div class="container">
+            <div class="row">
+            <div class="col-md-3">					
+            </div>				
+            <div class="col-md-6 main">                    
+              <h1> <b>Login form</b> </h1>
+              
+              <input class="box" type="email"    id="email" placeholder="E-Mail " required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email id e.g. 'email@email.com'"/><br>							
+              <input class="box" type="password" id="password" placeholder="Password " required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Please enter a Strong password, Must contain(Ucase, Lcase, Number, character) minimum length-8" /><br>
+              <br>
+              <table><tr>
+                <td><button id="submit">Login</button><a href="Registration.html"><button>Register</button></a></td>
+              </tr>
+              </table>
+            </div>				
+            <div class="col-md-3"></div></div></div>
+          </body>
+   <script>
+     var endpoint = "http://localhost:3000/login";
+		$("#submit").click(function(){		
+
+			var email = $("#email").val();
+			var password = $("#password").val();
+			
+	 			if (email != "" && password != ""){
+				$.post(endpoint, {
+				email: email,
+				password: password
+				}, function(data, status){
+					console.log("Data: " + data.message + "\nStatus: " + status);
+					if(data.message == "Success"){
+            console.log(data.user._id);
+            setCookie('userlogged', data.user._id,7);
+            setCookie('items', "", 7);
+						window.location.href = "products.html";
+					}else{
+            alert("Unable to login");
+          }
+				});		
+			}
+			else {
+				alert("please enter the data in text box")
+				document.name.focus();
+			}
+	});
+
+  function setCookie(name,value,days) {
+      try{
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days*24*60*60*1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        var stringbuilt = name + "=" + (value || "")  + expires + "; path=/";
+        console.log(stringbuilt);
+        document.cookie = stringbuilt;
+      }catch(e){
+        console.log(e);
+      }
+      
+      
+  }
+  function getCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for(var i=0;i < ca.length;i++) {
+          var c = ca[i];
+          while (c.charAt(0)==' ') c = c.substring(1,c.length);
+          if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+      }
+      return null;
+  }
+  function eraseCookie(name) {   
+      document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  }
+</script>
+</html>

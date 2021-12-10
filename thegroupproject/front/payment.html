@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<head>
+<title> Payment Form </title>		
+<link rel="stylesheet"
+href= "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+crossorigin="anonymous">		
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<body>	
+	<br><br><br>
+	<div class="container">
+		<div class="row">
+		<div class="col-md-3">
+		</div>
+		<div class="col-md-6 main">
+			<h1> <b>Payment Page</b></h1>
+			<form>
+			<input class="box" type="email"    id="email" placeholder="E-Mail" readonly/><br>
+            <input class="box" type="text"     id="address" placeholder="Address" required/><br>
+            <input class="box" type="text"     id="card_details" placeholder="Credit Card Number" minlength="16" maxlength="16" required/><br>
+            <input class="box" type="text"     id="cvv" maxlength="3" placeholder="CVV" pattern="^[0-9]{3,4}$" required /><br>
+            <input class="box" type="date"     id="date" placeholder="Date" required/><br>
+			<button type="Submit">PAY</button><br>
+			</form>
+		</div>
+		<div class="col-md-3"></div></div></div>
+	</body>
+	<script>
+		
+	</script>
+</html>	
+

@@ -1,0 +1,244 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <style>
+        .hide{
+
+visibility: hidden
+
+}
+
+        body {font-family: Arial, Helvetica, sans-serif;
+            background-color:#DADADA;
+        }
+        
+        input[type=button] {
+          background-color: #303030;
+          color: white;
+          padding: 14px 20px;
+          margin: 50px 0;
+          border: none;
+          cursor: pointer;
+          width: 29%;         
+        }
+        
+        input:hover {          
+          background-color: black;
+        }
+        
+        .container {
+          padding: 50px; 
+          text-align:  center;          
+          background-color: rgb(80, 122, 122);
+        } 
+        table{
+            background-color: white;
+        }       
+        .auto-style1 {
+            width: 180px;
+            height: 180px;
+        }   
+          
+        input[type=number]::-webkit-inner-spin-button {
+            opacity: 1
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body style="margin-left:120px">
+    </div>
+    <table  style="width: 1080px; text-align: center;background: rgba(0,0,0,0);" id="productstable">
+        <tr>
+            <td colspan="3" style="text-align: center;height: 80px;font-size: 30px;"><b>All Products</b><br>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3"><a href="products.html"><button>Products</button></a>
+                <a href="products_faves.html"><button>Favorites</button></a>
+                <a href="products_others.html"><button>Other Products</button></a>
+                <a href="cart.html"><button>View Cart</button></a>
+                <a href="updateuser.html"><button>Update User</button></a>
+                <a href="aboutus.html"><button>About us</button></a>
+                <button onclick="logout()">Logout</button>
+            </td>
+        </tr>
+        <tr><td colspan="3"><hr><br></td></tr>
+        <tbody id="productsid">
+
+
+        </tbody>
+    </table>
+    </body>
+
+<script>
+    if(getCookie("userlogged") == ""){
+            logout();
+        }
+    var endpoint = "http://localhost:3000/getAllProducts";
+    var user = getCookie("userlogged");
+    var ctr = 0;
+    let stringbuilt = "";
+                let id = "";
+                let name = "";
+                let type = "";
+                let description = "";
+                let price = "";
+                let markup = "";
+    
+    $.getJSON( endpoint, {
+        format: "json"
+    }).done(function( data ) {
+        setCookie('prices', "", 7);
+        $.each( data.products, function( i, item ) {
+            id = item._id;
+            name = item.name;
+            type = item.type;
+            description = item.description;
+            price = item.price;
+            image = item.image;
+            if(ctr%3==0){
+                markup += "</tr><tr><td id=\"td"+id+"\" class=\"hide\"><img class=\"auto-style1\" alt=\"\" src=\"" + image + " \" /><br /><label >"+name+"</label><br />$" + price + "<br /><button class=\"hide\" style=\"margin:5px;\" class=\"w3-btn w3-black\" id=\""+id+"\"  onclick=\"favoriteThis('"+id+"', '"+user+"')\" type=\"button\" value=\"Add to Fav\" >Add to Fav</button>"+
+                    "<button class=\"hide\" style=\"margin:5px;\" class=\"w3-btn w3-black\" id=\"cart"+id+"\" onclick=\"addcart('"+id+"', '"+user+"')\"type=\"button\" value=\"Add to Cart\" >Add to Cart</button></td>";
+            }else{
+                markup += "<td id=\"td"+id+"\" class=\"hide\"><img class=\"auto-style1\" alt=\"\" src=\"" + image + " \" /><br /><label >"+name+"</label><br />$" + price + "<br /><button class=\"hide\" class=\"w3-btn w3-black\" id=\""+id+"\"  onclick=\"favoriteThis('"+id+"', '"+user+"')\" type=\"button\" value=\"Add to Fav\" Add to Fav</button><button class=\"hide\" style=\"margin:5px;\" class=\"w3-btn w3-black\" id=\"cart"+id+"\" onclick=\"addcart('"+id+"', '"+user+"')\"type=\"button\" value=\"Add to Cart\" >Add to Cart</button></td>";
+            }
+            var pricesbuilt = id + "," + price + "," + name + "|";
+            var c = getCookie("prices");
+            if(c == null || c==""){
+                setCookie('prices', pricesbuilt, 7);
+            }else{
+                setCookie('prices', c + pricesbuilt, 7);
+            }
+            checkiffavorite(id, user);
+            ctr++;
+        });
+        var tableBody = $("#productsid");
+        if(tableBody.empty){
+            tableBody.append(markup);
+        }});
+    
+    function addcart(id, user){
+        var items = getCookie("items");
+        var existing = false;
+        var stringbuilt = "";
+        if(items == null || items == ""){ 
+            stringbuilt = id + "," + 1;
+        }else{
+            var perItem = items.split("|");
+            console.log(perItem);
+            
+            for(var i = 0; i<perItem.length; i++){
+                if(id == (perItem[i].split(","))[0]){
+                    existing = true;
+                }
+            }
+            stringbuilt = items + "|" + id + "," + 1;
+        }
+        if(!existing){
+            setCookie('items', stringbuilt,7);
+            document.getElementById("cart"+id).innerHTML = "Add to cart(1)";
+            alert("Item added into cart successfully");
+        }else{
+            document.getElementById("cart"+id).innerHTML = "Add to cart(1)";
+            alert("Item is already in your cart");
+        }
+    }
+
+    function checkiffavorite(id, user){
+        var endpoint = "http://localhost:3000/checkiffavorite";
+        $.post(endpoint, {
+            user: user,
+            product: id   
+            }, function(data, status){
+                console.log("Data: " + data.message + "\nStatus: " + status);
+                var input = document.getElementById(id);
+                if(data.message == "Success"){
+                    input.setAttribute("value", "Remove Fav");
+                    $("#"+id).html("Remove Fav");
+                    input.setAttribute("onclick","unfavoriteThis('"+id+"', '"+user+"')");
+                    console.log("#td"+id);
+                    document.getElementById("td"+id).setAttribute("class", "hide");
+                    
+                    //document.getElementById("#td"+id).className = "auto-style5";
+                }else{
+                    input.setAttribute("value", "Add to Fav");
+                    $("#"+id).html("Add to Fav");
+                    input.setAttribute("onclick","favoriteThis('"+id+"', '"+user+"')");
+                    document.getElementById("td"+id).setAttribute("class", "auto-style5");
+                    //$("#td"+id).setAttribute("", "hidden");
+                    //document.getElementById("#td"+id).className = "hide";
+                }
+            });	
+    }
+
+    function logout(){
+        setCookie('userlogged', "", 7);
+        setCookie('items', "", 7);
+        window.location.href = "signin.html";
+    }
+
+    function unfavoriteThis(id, user){
+        var endpoint = "http://localhost:3000/unfavoritethisitem";
+        $.post(endpoint, {
+            user: user,
+            product: id   
+            }, function(data, status){
+                //console.log("Data: " + data.message + "\nStatus: " + status);
+                if(data.message == "Success"){
+                    console.log("Success on unfavoriting");
+                    var input = document.getElementById(id);
+                    input.setAttribute("value", "Add to Fav");
+                    $("#"+id).html("Add to Fav");
+                    input.setAttribute("onclick","favoriteThis('"+id+"', '"+user+"')");
+                }else{
+                    console.log("Failed on unfavoriting");
+                }
+            });	
+    }
+
+    function favoriteThis(id, user){
+        var endpoint = "http://localhost:3000/favoritethisitem";
+        $.post(endpoint, {
+            user: user,
+            product: id   
+            }, function(data, status){
+                //console.log("Data: " + data.message + "\nStatus: " + status);
+                if(data.message == "Success"){
+                    console.log("Success")
+                    var input = document.getElementById(id);
+                    input.setAttribute("value", "Remove Fav");
+                    $("#"+id).html("Remove Fav");
+                    input.setAttribute("onclick","unfavoriteThis('"+id+"', '"+user+"')");
+                }else{
+                    console.log("Failed");
+                }
+            });	
+    }
+
+    function setCookie(name,value,days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days*24*60*60*1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    }
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    }
+    function eraseCookie(name) {   
+        document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
+
+</script>
+</html>
